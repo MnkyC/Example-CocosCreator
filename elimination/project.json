@@ -1,0 +1,9 @@
+{
+  "engine": "cocos2d-html5",
+  "packages": "packages",
+  "version": "2.3.3",
+  "name": "elimination",
+  "uuid": "df8ee406-f45c-4d27-8f08-7ca1ac31b7bf",
+  "id": "37fbd9b9-74c5-4d13-9028-5f9c28b57402",
+  "isNew": false
+}
