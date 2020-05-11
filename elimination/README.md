@@ -38,6 +38,10 @@
 	sdk, 平台
 ## Texture
 ### 简介
-图片资源
+资源
 ### 设计
+	effect, 自定义着色效果
+	material，自定义材质资源
+	model, 3D模型
+	prefab, 公共预制体
 	game, 游戏资源
