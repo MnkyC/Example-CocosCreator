@@ -3,7 +3,7 @@
 const { ccclass, property } = cc._decorator;
 
 @ccclass
-export default class NewClass extends cc.Component {
+export default class MnCirclePlayer extends cc.Component {
 
     @property(cc.Sprite)
     avatar: cc.Sprite = null;
