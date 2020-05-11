@@ -2,6 +2,10 @@
   "collision-matrix": [
     [
       true
+    ],
+    [
+      false,
+      false
     ]
   ],
   "excluded-modules": [
@@ -12,7 +16,8 @@
     "3D Particle"
   ],
   "group-list": [
-    "default"
+    "default",
+    "role"
   ],
   "design-resolution-width": 720,
   "design-resolution-height": 1280,
@@ -37,6 +42,5 @@
       "enable": false
     }
   },
-  "migrate-history": [],
-  "start-scene": "current"
+  "migrate-history": []
 }
