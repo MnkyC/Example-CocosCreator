@@ -9,7 +9,8 @@
 
 /assets/resources/
 /assets/Scene/
-/assets/Texture/
+/assets/Texture/game/
+/assets/Texture/prefab/game/
 
 #/////////////////////////////////////////////////////////////////////////////
 # npm files
