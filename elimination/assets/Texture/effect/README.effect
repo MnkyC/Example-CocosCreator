@@ -1,0 +1,93 @@
+// YAML格式
+
+// 流程控制
+CCEffect %{
+  techniques: # 数组
+  - passes: # 数组，存放渲染管道的描述内容
+    - vert: vs # 指定顶点着色器的名字
+      frag: fs # 指定片元着色器的名字
+      blendState: # 混合模式
+        targets:
+        - blend: true # 开启
+      rasterizerState: # 光栅化
+        cullMode: none
+      properties: # 属性检查器中的可编辑的属性，其实就是uniform参数
+        texture: { value: white }
+        alphaThreshold: { value: 0.5 }
+}%
+
+// 顶点着色器
+CCProgram vs %{
+  precision highp float; // 定义float类型的精度为高精度
+
+  // Mac目录: /Applications/CocosCreator/Creator/2.3.3/CocosCreator.app/Contents/Resources/engine/cocos2d/renderer/build/chunks
+  // CC所有内置的Shader变量必须要引入头文件，头文件都位于chunks目录下
+  #include <cc-global>
+  #include <cc-local>
+
+  // 顶点着色器从渲染管道中获取的数据
+  // in表示在函数参数中，该参数是输入的，函数中改变该值不会对函数产生副作用，函数参数默认修饰符
+  // out表示在函数参数中，该参数是输出的，值是会改变的
+
+  in vec3 a_position; // 顶点坐标，采用笛卡尔右手坐标系(原点在左下角，x向右，y向上，z向外)，也是OpenGL坐标系
+  in vec4 a_color; // 顶点颜色，对应节点的颜色
+  out vec4 v_color; // 顶点着色器最后会输出的颜色值，在片元着色器中可以接收到该值
+
+  // 定义宏，若使用了纹理就调用这段代码
+  #if USE_TEXTURE
+  in vec2 a_uv0; // 输入的纹理坐标，采用标准屏幕坐标系(原点在左上角，x向右，y向下)
+  out vec2 v_uv0; // 输出的纹理坐标，在片元着色器中可以接收到该值
+  #endif
+
+  void main () {
+    vec4 pos = vec4(a_position, 1);
+
+    #if CC_USE_MODEL
+    pos = cc_matViewProj * cc_matWorld * pos;
+    #else
+    pos = cc_matViewProj * pos;
+    #endif
+
+    #if USE_TEXTURE
+    v_uv0 = a_uv0;
+    #endif
+
+    v_color = a_color;
+
+    gl_Position = pos;
+  }
+}%
+
+// 片元着色器
+CCProgram fs %{
+  precision highp float;
+  
+  #include <alpha-test>
+  #include <texture>
+
+  in vec4 v_color; // 顶点的颜色，来自顶点着色器
+
+  // uniform表示“一致变量”
+  // 着色器执行期间该值是不变的，在顶点和片元着色器之间是共享的
+  // 与const不同，编译期间是未知的，需要着色器外部初始化
+
+  #if USE_TEXTURE
+  in vec2 v_uv0; // 顶点的坐标，来自顶点着色器
+  uniform sampler2D texture;
+  #endif
+
+  void main () {
+    vec4 o = vec4(1, 1, 1, 1);
+
+    #if USE_TEXTURE
+      CCTexture(texture, v_uv0, o);
+    #endif
+
+    o *= v_color; // 纹理颜色和顶点颜色混合得到最终颜色
+
+    // 来自alpha-test头文件，若传入的o的透明通道值小于传入的alphaThreshold值时会启动丢弃操作，即退出片元着色器，不执行后面的片段着色操作，片段也不会写入帧缓冲区
+    ALPHA_TEST(o);
+
+    gl_FragColor = o;
+  }
+}%

@@ -1,0 +1,26 @@
+{
+  "__type__": "cc.Material",
+  "_name": "mn_discolor",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "910e168e-3668-4b62-b14a-396f6cbcda11"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {
+        "USE_TEXTURE": true
+      },
+      "props": {
+        "discolor": {
+          "__type__": "cc.Color",
+          "r": 0,
+          "g": 0,
+          "b": 0,
+          "a": 0
+        }
+      }
+    }
+  }
+}
