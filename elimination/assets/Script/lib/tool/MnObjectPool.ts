@@ -29,7 +29,7 @@ export default class ObjectPool {
     }
 
     /**
-     * 从对象池中获取一个对象
+     * 获取对象
      */
     public get(): Object {
         let obj: Object;
@@ -47,6 +47,23 @@ export default class ObjectPool {
         }
 
         return obj;
+    }
+
+    /**
+     * 回收对象
+     * @param value 
+     */
+    public put(value: Object): boolean {
+        if (value && this._list.length < this._maxSize) {
+            if (value instanceof this._template && this._list.indexOf(value) == -1) {
+                this._list.push(value);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -74,23 +91,6 @@ export default class ObjectPool {
                 this._list.shift();
             }
         }
-    }
-
-    /**
-     * 归还对象
-     * @param value 
-     */
-    public put(value: Object): boolean {
-        if (value && this._list.length < this._maxSize) {
-            if (value instanceof this._template && this._list.indexOf(value) == -1) {
-                this._list.push(value);
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        return false;
     }
 
 }
