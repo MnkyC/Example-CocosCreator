@@ -1,8 +1,8 @@
 // 工具类
 
-export class MnUtil{
+export class MnUtil {
 
-    public static injectProp(target: Object, data: Object = null, callback: Function = null, ignoreMethod: boolean = true, ignoreNull: boolean = true): boolean {
+	public static injectProp(target: Object, data: Object = null, callback: Function = null, ignoreMethod: boolean = true, ignoreNull: boolean = true): boolean {
 		if (!data) {
 			return false;
 		}
@@ -18,6 +18,7 @@ export class MnUtil{
 				}
 			}
 		}
+
 		return result;
 	}
 }
