@@ -3,6 +3,8 @@
  * 需将该脚本挂载到场景Canvas下
  */
 
+import MnEventManager from "../lib/support/MnEventManager";
+
 const { ccclass, property } = cc._decorator;
 
 @ccclass
@@ -21,6 +23,9 @@ export default class MnRole extends cc.Component {
     private _ghostTexture: cc.RenderTexture = null; // 摄像机渲染目标
 
     onLoad() {
+        this.name = "MnRole";
+
+        MnEventManager.instance.registerOnObject(this, this.node, cc.Node.EventType.TOUCH_MOVE, this.touchMoveEvent, this);
     }
 
     // 增加残影效果
@@ -50,7 +55,8 @@ export default class MnRole extends cc.Component {
         });
 
         this.schedule(this.ghostFollow, 0.1, cc.macro.REPEAT_FOREVER);
-        this.node.on(cc.Node.EventType.TOUCH_MOVE, this.touchMoveEvent, this);
+
+        MnEventManager.instance.enableOnObject(this);
 
         this._ghostEffect = true;
     }
@@ -59,7 +65,7 @@ export default class MnRole extends cc.Component {
     public removeGhostEffect(): void {
         if (!this._ghostEffect) return;
 
-        this.node.off(cc.Node.EventType.TOUCH_MOVE, this.touchMoveEvent, this);
+        MnEventManager.instance.disableOnObject(this);
 
         this._ghostTexture.destroy();
         this.roleCamera.targetTexture = null;
@@ -86,7 +92,7 @@ export default class MnRole extends cc.Component {
 
     onDestroy() {
         this.ghostFollow && this.unschedule(this.ghostFollow);
-        this.node.off(cc.Node.EventType.TOUCH_MOVE, this.touchMoveEvent, this);
+        MnEventManager.instance.clearEvents(this);
     }
 
     ghostFollow() {
