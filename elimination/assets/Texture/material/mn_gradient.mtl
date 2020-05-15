@@ -1,0 +1,26 @@
+{
+  "__type__": "cc.Material",
+  "_name": "mn_gradient",
+  "_objFlags": 0,
+  "_native": "",
+  "_effectAsset": {
+    "__uuid__": "92652252-4061-4366-803d-6d7834fd4a43"
+  },
+  "_techniqueIndex": 0,
+  "_techniqueData": {
+    "0": {
+      "defines": {
+        "USE_TEXTURE": true
+      },
+      "props": {
+        "gradient_value": 0,
+        "texture_first": {
+          "__uuid__": "ccf6004d-196a-46fe-b773-d77262c58403"
+        },
+        "texture_second": {
+          "__uuid__": "5a8ca485-e332-405e-8f7d-7b1f4ede65bb"
+        }
+      }
+    }
+  }
+}
