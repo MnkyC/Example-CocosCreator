@@ -13,9 +13,9 @@ import encrypt = require("../lib/jslib/MnEncryptjs");
 export default class MnGDataStorage {
 
     public name: string = "save";
-    private _secretkey: string = "123456";
-    private _save: any = null;
-    private _prefix: string = null;
+    public save: any = null;
+    public secretkey: string = "123456";
+    public prefix: string = null;
 
     public constructor() {
     }
@@ -24,16 +24,16 @@ export default class MnGDataStorage {
      * 加载存储数据
      */
     public loadData(): void {
-        this._save = cc.sys.localStorage.getItem(this.name);
+        this.save = cc.sys.localStorage.getItem(this.name);
 
         try {
-            this._save = JSON.parse(encrypt.decrypt(this._save, this._secretkey, 256));
+            this.save = JSON.parse(encrypt.decrypt(this.save, this.secretkey, 256));
         } catch (err) {
             cc.error(err);
         }
 
-        if (!this._save)
-            this._save = {};
+        if (!this.save)
+            this.save = {};
     }
 
     /**
@@ -41,13 +41,13 @@ export default class MnGDataStorage {
      */
     public clearData(exclude: string[] = null): void {
         if (exclude) {
-            for (let key in this._save) {
+            for (let key in this.save) {
                 if (exclude.indexOf(key) < 0) {
-                    delete this._save[key];
+                    delete this.save[key];
                 }
             }
         } else {
-            this._save = {};
+            this.save = {};
         }
 
         this.saveData();
@@ -58,8 +58,8 @@ export default class MnGDataStorage {
      */
     public saveData(): void {
         try {
-            let str: string = JSON.stringify(this._save);
-            let data: string = encrypt.encrypt(str, this._secretkey, 256);
+            let str: string = JSON.stringify(this.save);
+            let data: string = encrypt.encrypt(str, this.secretkey, 256);
             cc.sys.localStorage.setItem(this.name, data);
         } catch (err) {
             cc.error(err);
@@ -72,7 +72,7 @@ export default class MnGDataStorage {
      * @param defaultValue 默认数据 
      */
     public getItem(key: string, defaultValue: any = null): any {
-        let item = this._save[key];
+        let item = this.save[key];
         if (!item) {
             item = defaultValue;
         }
@@ -87,8 +87,8 @@ export default class MnGDataStorage {
      * @param autoSave 自动保存，默认false
      */
     public setItem(key: string, value: any, autoSave: boolean = false): any {
-        let oldValue = this._save[key];
-        this._save[key] = value;
+        let oldValue = this.save[key];
+        this.save[key] = value;
 
         if (autoSave) {
             this.saveData();
