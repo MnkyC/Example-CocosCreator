@@ -1,48 +1,54 @@
 /**
- * 全局动画管理器
+ * 动画管理器
  * 顺序栈实现
  * 
  * example:
-        MnGAnimationManager.instance.addAnimation(() => {
+        MnAnimationManager.getInstance('').addAnimation(() => {
             // code here
 
-            MnGAnimationManager.instance.animationOver();
+            MnAnimationManager.getInstance('').animationOver();
         }, null);
 
         // 回调形式(推荐)
-        MnGAnimationManager.instance.addAnimation(() => {
+        MnAnimationManager.getInstance('').addAnimation(() => {
             method(()=> {
-                MnGAnimationManager.instance.animationOver();
+                MnAnimationManager.getInstance('').animationOver();
             });
         }, null);
 
         // 定时形式
-        MnGAnimationManager.instance.addAnimation(() => {
+        MnAnimationManager.getInstance('').addAnimation(() => {
             // code here
 
-            this.scheduleOnce(() => { MnGAnimationManager.instance.animationOver() }, 2);
+            this.scheduleOnce(() => { MnAnimationManager.getInstance('').animationOver() }, 2);
         }, null);
  */
 
-export default class MnGAnimationManager {
+export default class MnAnimationManager {
+
+    private static _pool: any = [];
 
     private static STATE_IDLE: number = 1;
     private static STATE_BUSY: number = 2;
+
     private _state: number = null;
     private _animation_queue: Array<any> = null;
 
     private constructor() {
         this._animation_queue = [];
-        this._state = MnGAnimationManager.STATE_IDLE;
+        this._state = MnAnimationManager.STATE_IDLE;
     }
 
-    private static _instance: MnGAnimationManager = null;
-    public static get instance(): MnGAnimationManager {
-        if (!this._instance) {
-            this._instance = new MnGAnimationManager();
+    public static getInstance(name: string): MnAnimationManager {
+        if (!name) {
+            name = 'MnAnimationManager';
         }
 
-        return this._instance;
+        if (!MnAnimationManager._pool[name]) {
+            MnAnimationManager._pool[name] = new MnAnimationManager();
+        }
+
+        return MnAnimationManager._pool[name];
     }
 
     /**
@@ -51,7 +57,7 @@ export default class MnGAnimationManager {
     public animationOver(): void {
         const animation = this._animation_queue[0];
         if (!animation) {
-            this._state = MnGAnimationManager.STATE_IDLE;
+            this._state = MnAnimationManager.STATE_IDLE;
             return;
         }
 
@@ -63,20 +69,20 @@ export default class MnGAnimationManager {
      * 清空动画
      */
     public endAnimations(): void {
-        if (this._state == MnGAnimationManager.STATE_IDLE) {
+        if (this._state == MnAnimationManager.STATE_IDLE) {
             return;
         }
 
         const animation = this._animation_queue[0];
         if (!animation) {
-            this._state = MnGAnimationManager.STATE_IDLE;
+            this._state = MnAnimationManager.STATE_IDLE;
             return;
         }
 
         animation.clearFunc && animation.clearFunc();
 
         this.clearQueue();
-        this._state = MnGAnimationManager.STATE_IDLE;
+        this._state = MnAnimationManager.STATE_IDLE;
     }
 
     /**
@@ -99,7 +105,7 @@ export default class MnGAnimationManager {
         let animation = { animFunc: animFunc, clearFunc: clearFunc };
         this._animation_queue.push(animation);
 
-        if (this._state == MnGAnimationManager.STATE_BUSY) {
+        if (this._state == MnAnimationManager.STATE_BUSY) {
             return;
         }
 
@@ -112,11 +118,11 @@ export default class MnGAnimationManager {
     private checkQueue(): void {
         const animation = this._animation_queue[0];
         if (!animation) {
-            this._state = MnGAnimationManager.STATE_IDLE;
+            this._state = MnAnimationManager.STATE_IDLE;
             return;
         }
 
-        this._state = MnGAnimationManager.STATE_BUSY;
+        this._state = MnAnimationManager.STATE_BUSY;
 
         animation.animFunc();
     }
